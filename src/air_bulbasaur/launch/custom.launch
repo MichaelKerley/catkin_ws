@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<launch>
+
+
+    <!-- pointcloud for avoidance -->
+    <!-- <arg name="pointcloud_topics" default="[/depth_camera_foward/depth/points]"/> -->
+
+    <arg name="pointcloud_topics" default="[/depth_camera_foward/depth/points,/depth_camera_down/depth/points]" />
+    <!-- Transforms from base_link to camera -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tempFix" args="0 0 0 0 0 0 map local_origin 10" /> -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera" args="0 0 0 -1.57079632679 0 3.14 fcu depth_camera_down 20" /> -->
+    <node pkg="tf" type="static_transform_publisher" name="tf_downward_camera" args="0 0 0 1.57 3.14 0 fcu depth_camera_down 10" />
+
+    <node pkg="tf" type="static_transform_publisher" name="tf_foward_camera" args="0 0 0 -1.57 0 -1.57 fcu depth_camera_foward 20" />
+    <!-- position -->
+    <arg name="x" default="0" />
+    <arg name="y" default="0" />
+    <arg name="z" default="0" />
+    <arg name="R" default="0" />
+    <arg name="P" default="0" />
+    <arg name="Y" default="0" />
+    <!-- vehicle model and world -->
+    <arg name="est" default="ekf2" />
+    <arg name="vehicle" default="iris" />
+    <!-- <arg name="world" default="/usr/share/gazebo-11/worlds/empty.world"/> -->
+    <arg name="world" default="$(find air_bulbasaur)/worlds/modalAI.world" />
+    <arg name="sdf" default="$(find air_bulbasaur)/models/iris/iris.sdf" />
+    <!-- gazebo configs -->
+    <arg name="gui" default="true" />
+    <arg name="debug" default="false" />
+    <arg name="verbose" default="true" />
+    <arg name="paused" default="false" />
+    <arg name="respawn_gazebo" default="false" />
+    <arg name="lockstep" default="true" />
+    <!-- MAVROS configs -->
+    <arg name="fcu_url" default="udp://:14540@localhost:14557" />
+    <arg name="ns" default="/" />
+    <arg name="gcs_url" default="" /> <!-- GCS link is provided by SITL -->
+    <arg name="tgt_system" default="1" />
+    <arg name="tgt_component" default="1" />
+    <arg name="respawn_mavros" default="false" />
+    <!-- PX4 configs -->
+    <arg name="interactive" default="true" />
+
+
+    <!-- Launch PX4 SITL -->
+    <env name="PX4_SIM_MODEL" value="$(arg vehicle)" />
+    <env name="PX4_ESTIMATOR" value="$(arg est)" />
+    <arg unless="$(arg interactive)" name="px4_command_arg1" value="-d" />
+    <arg if="$(arg interactive)" name="px4_command_arg1" value="" />
+    <node name="sitl" pkg="px4" type="px4" output="screen" args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS $(arg px4_command_arg1)" required="true" />
+
+    <!-- Launch MavROS -->
+    <group ns="$(arg ns)">
+        <include file="$(find mavros)/launch/node.launch">
+            <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
+            <!-- Need to change the config file to get the tf topic and get local position in terms of local origin -->
+            <!-- done already -->
+            <!-- <arg name="config_yaml" value="$(find avoidance)/resource/px4_config.yaml" /> -->
+            <arg name="config_yaml" value="$(find air_bulbasaur)/config/iris_config.yaml" />
+            <arg name="fcu_url" value="$(arg fcu_url)" />
+            <arg name="gcs_url" value="$(arg gcs_url)" />
+            <arg name="tgt_system" value="$(arg tgt_system)" />
+            <arg name="tgt_component" value="$(arg tgt_component)" />
+        </include>
+    </group>
+
+    <!-- Launch Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="world_name" value="$(arg world)" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="verbose" value="$(arg verbose)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="respawn_gazebo" value="$(arg respawn_gazebo)" />
+        <arg unless="$(arg lockstep)" name="extra_gazebo_args" value="" />
+        <arg if="$(arg lockstep)" name="extra_gazebo_args" value="--lockstep" />
+    </include>
+
+
+    <!-- gazebo model -->
+    <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
+
+
+    <!-- Load custom console configuration -->
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find local_planner)/resource/custom_rosconsole.conf" />
+
+    <!-- Launch local planner -->
+    <arg name="manager" default="local_planner_manager" />
+    <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen" />
+    <!-- launches on delay so will stop throwing errors durring startup -->
+    <node pkg="nodelet" type="nodelet" name="local_planner_nodelet" args="load LocalPlannerNodelet $(arg manager)" output="screen" launch-prefix="bash -c 'sleep 10; $0 $@' ">
+        <param name="goal_x_param" value="10" />
+        <param name="goal_y_param" value="10" />
+        <param name="goal_z_param" value="10" />
+        <!-- <param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" /> -->
+
+        <rosparam param="pointcloud_topics" subst_value="True">$(arg pointcloud_topics)</rosparam>
+    </node>
+
+
+    <!-- Launch rqt_reconfigure -->
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" output="screen" name="rqt_reconfigure" />
+
+
+
+    <!-- safe landing planner node-->
+    <node name="safe_landing_planner_node" pkg="safe_landing_planner" type="safe_landing_planner_node" output="screen">
+        <param name="pointcloud_topics" value="$(arg pointcloud_topics)" />
+        <!-- <param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" /> -->
+    </node>
+
+    <node name="waypoint_generator_node" pkg="safe_landing_planner" type="waypoint_generator_node" output="screen"></node>
+
+    <node name="dynparam_slpn" pkg="dynamic_reconfigure" type="dynparam" args="load safe_landing_planner_node $(find safe_landing_planner)/cfg/slpn.yaml" />
+    <node name="dynparam_wpgn" pkg="dynamic_reconfigure" type="dynparam" args="load waypoint_generator_node $(find safe_landing_planner)/cfg/wpgn.yaml" />
+
+
+    <!-- RVIZ -->
+    <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find air_bulbasaur)/rviz/RVIZModalAI.rviz" />
+
+
+</launch>

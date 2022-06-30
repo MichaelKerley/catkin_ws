@@ -3,15 +3,16 @@
 
 
     <!-- pointcloud for avoidance -->
-    <!-- <arg name="pointcloud_topics" default="[/depth_camera_foward/depth/points]"/> -->
-
     <arg name="pointcloud_topics" default="[/depth_camera_foward/depth/points,/depth_camera_down/depth/points]" />
+
     <!-- Transforms from base_link to camera -->
     <!-- <node pkg="tf" type="static_transform_publisher" name="tempFix" args="0 0 0 0 0 0 map local_origin 10" /> -->
     <!-- <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera" args="0 0 0 -1.57079632679 0 3.14 fcu depth_camera_down 20" /> -->
     <node pkg="tf" type="static_transform_publisher" name="tf_downward_camera" args="0 0 0 1.57 3.14 0 fcu depth_camera_down 10" />
-
     <node pkg="tf" type="static_transform_publisher" name="tf_foward_camera" args="0 0 0 -1.57 0 -1.57 fcu depth_camera_foward 20" />
+
+
+
     <!-- position -->
     <arg name="x" default="0" />
     <arg name="y" default="0" />
@@ -104,14 +105,12 @@
 
 
 
-    <!-- safe landing planner node-->
+    <!-- safe landing planner -->
     <node name="safe_landing_planner_node" pkg="safe_landing_planner" type="safe_landing_planner_node" output="screen">
         <param name="pointcloud_topics" value="$(arg pointcloud_topics)" />
         <!-- <param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" /> -->
     </node>
-
     <node name="waypoint_generator_node" pkg="safe_landing_planner" type="waypoint_generator_node" output="screen"></node>
-
     <node name="dynparam_slpn" pkg="dynamic_reconfigure" type="dynparam" args="load safe_landing_planner_node $(find safe_landing_planner)/cfg/slpn.yaml" />
     <node name="dynparam_wpgn" pkg="dynamic_reconfigure" type="dynparam" args="load waypoint_generator_node $(find safe_landing_planner)/cfg/wpgn.yaml" />
 

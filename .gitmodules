@@ -4,3 +4,6 @@
 [submodule "src/PX4-Autopilot"]
 	path = src/PX4-Autopilot
 	url = git@github.com:PX4/PX4-Autopilot.git
+[submodule "src/air_bulbasaur"]
+	path = src/air_bulbasaur
+	url = git@github.com:MichaelKerley/air_bulbasaur.git

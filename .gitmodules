@@ -7,3 +7,6 @@
 [submodule "src/air_bulbasaur"]
 	path = src/air_bulbasaur
 	url = git@github.com:MichaelKerley/air_bulbasaur.git
+[submodule "src/superSafeLanding"]
+	path = src/superSafeLanding
+	url = git@github.com:MichaelKerley/superSafeLanding.git

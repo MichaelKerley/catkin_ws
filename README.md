@@ -35,6 +35,28 @@ export RMD_TEST_DATA_PATH="/home/alibek/catkin_ws/src/rpg_open_remode/test_data"
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # catkin_ws
 Please follow all instructions carefully as any deviation may cause issues later
 

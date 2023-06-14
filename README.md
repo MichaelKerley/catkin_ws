@@ -55,7 +55,7 @@ you may need to do git submodule synch or git submodule update --init --recursiv
 cd catkin_ws/src/PX4-Autopilot/
 
 make px4_sitl gazebo
-
+make px4_sitl_default gazebo
 
 6:
 

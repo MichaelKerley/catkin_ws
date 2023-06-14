@@ -1,3 +1,40 @@
+#media/materials/textures:/usr/share/gazebo-11/media:~/catkin_ws/models/baylands/media:~/.gazebo/models
+
+
+
+
+##do not change what is below this works and its annoying to fix
+#source /usr/share/gazebo/setup.bash
+source /opt/ros/noetic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+source ~/catkin_ws/src/PX4-Autopilot/Tools/setup_gazebo.bash ~/catkin_ws/src/PX4-Autopilot ~/catkin_ws/src/PX4-Autopilot/build/px4_sitl_default
+
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/catkin_ws/src/PX4-Autopilot
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/catkin_ws/src/PX4-Autopilot/Tools/sitl_gazebo
+
+export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/include/gazebo-11/gazebo/plugins
+export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins
+
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/.gazebo/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/catkin_ws/src/air_bulbasaur/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/catkin_ws/src/air_bulbasaur/worlds
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/catkin_ws/src/PX4-Autopilot/Tools/sitl_gazebo/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/catkin_ws/src/PX4-avoidance/avoidance/sim/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/catkin_ws/src/PX4-avoidance/avoidance/sim/worlds
+export ROS_MASTER_URI=http://10.144.106.21:11311/
+export ROS_IP=10.144.106.21
+
+export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH:/usr/share/gazebo-11
+
+
+#:~/catkin_ws/src/PX4-Avoidance/avoidance/sim/models:~/catkin_ws/src/PX4-Avoidance/avoidance/sim/worlds:~/.gazebo/models
+
+export MY_WORKSPACE="/home/alibek/workspace"
+export MY_CATKIN_WORKSPACE="/home/alibek/catkin_ws"
+export RMD_TEST_DATA_PATH="/home/alibek/catkin_ws/src/rpg_open_remode/test_data"
+
+
+
 # catkin_ws
 Please follow all instructions carefully as any deviation may cause issues later
 

@@ -10,3 +10,6 @@
 [submodule "src/ros_deep_learning"]
 	path = src/ros_deep_learning
 	url = https://github.com/MichaelKerley/ros_deep_learning.git
+[submodule "src/realsense-ros"]
+	path = src/realsense-ros
+	url = git@github.com:MichaelKerley/realsense-ros.git

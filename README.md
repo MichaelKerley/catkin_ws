@@ -23,8 +23,11 @@ This allows from computer vision stuff
 
 2: install zero tier
 `curl -s https://install.zerotier.com | sudo bash`
+
 `sudo zerotier-cli status`
+
 `sudo systemctl enable zerotier-one`
+
 `sudo zerotier-cli join 632ea290859bb47a`
 
 This will allow us to ssh into the drone and control it from ground station
@@ -49,16 +52,25 @@ Test librealsense by doing `realsense-viewer`
 `cd catkin_ws`
 
 `SWITCH TO THE drone branch!!!`
+
 `git submodule update --init --recursive`
+
 `sudo apt install ros-noetic-rgbd-launch`
+
 `michael@ubuntu:~/catkin_ws$ catkin init`
+
 `~/catkin_ws$ catkin clean`
+
 `~/catkin_ws$ catkin build realsense2_camera realsense2_description -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release`
+
 `~/catkin_ws$ catkin realsense2_camera realsense2_description config --install`
 
 7: test Realsense ros
 `~/catkin_ws$ . /opt/ros/noetic/setup.bash`
+
 `~/catkin_ws$ . ./devel/setup.bash` 
+
 `~/catkin_ws$ roslaunch realsense2_camera demo_pointcloud.launch`
+
 
 

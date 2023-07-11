@@ -45,7 +45,10 @@ Test librealsense by doing `realsense-viewer`
 6: Clone the repo and build
 
 `git clone https://github.com/MichaelKerley/catkin_ws.git` 
+
 `cd catkin_ws`
+
+`SWITCH TO THE drone branch!!!`
 `git submodule update --init --recursive`
 `sudo apt install ros-noetic-rgbd-launch`
 `michael@ubuntu:~/catkin_ws$ catkin init`

@@ -22,6 +22,7 @@ This allows from computer vision stuff
 
 
 2: install zero tier
+
 `curl -s https://install.zerotier.com | sudo bash`
 
 `sudo zerotier-cli status`
@@ -42,6 +43,7 @@ DO NOT PATCH THE KERNEL!!!!
 Test librealsense by doing `realsense-viewer`
 
 5: install catkin tools
+
 `sudo apt-get install python3-catkin-tools`
 
 
@@ -66,6 +68,7 @@ Test librealsense by doing `realsense-viewer`
 `~/catkin_ws$ catkin realsense2_camera realsense2_description config --install`
 
 7: test Realsense ros
+
 `~/catkin_ws$ . /opt/ros/noetic/setup.bash`
 
 `~/catkin_ws$ . ./devel/setup.bash` 
